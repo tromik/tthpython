@@ -1,0 +1,14 @@
+*.pyc
+pip-selfcheck.json
+tcl/*
+Scripts/*
+Lib/*
+Include/*
+*.log
+*.csv
+.DS_Store
+.Python
+.gitignore.swp
+bin/*
+lib/*
+local/*
