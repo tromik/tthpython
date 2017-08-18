@@ -12,3 +12,5 @@ Include/*
 bin/*
 lib/*
 local/*
+lib64/*
+pyvenv.cfg
