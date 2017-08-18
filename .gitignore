@@ -13,4 +13,5 @@ bin/*
 lib/*
 local/*
 lib64/*
+lib64\*
 pyvenv.cfg
