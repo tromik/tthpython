@@ -1,3 +1,4 @@
+import os
 import random
 
 # Create a game with a 2-dimensional map.
@@ -23,14 +24,14 @@ CELLS = [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0),
          (0, 3), (1, 3), (2, 3), (3, 3), (4, 3),
          (0, 4), (1, 4), (2, 4), (3, 4), (4, 4)]
 
-print(random.sample(CELLS, 1)[0])
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
 
 def get_locations():
-    monster = random.sample(CELLS, 1)[0]
-    exit = random.sample(CELLS, 1)[0]
-    player = random.sample(CELLS, 1)[0]
-
-    return monster, exit, player
+    return random.sample(CELLS, 3)
 
 
 def move_player(player, move):
@@ -75,11 +76,12 @@ def get_moves(player):
 monster, exit, player = get_locations()
 
 while True:
+    clear_screen()
 
     print("You are currently in room {}".format(player)) # add position
 
     available_moves = get_moves(player)
-    print("You can move {}, or enter QUIT to exit the game".format(available_moves)) # add available moves
+    print("You can move {}, or enter QUIT to exit the game".format(", ".join(available_moves))) # add available moves
 
     move = input("> ").upper()
 
@@ -95,7 +97,7 @@ while True:
         player = move_player(player, move)
     # bad move? Don't do anything
     else:
-        print("{} is not a valid move. You can move {}".format(move, available_moves))
+        print("{} is not a valid move. You can move {}".format(move, ", ".join(available_moves)))
 
     if player == exit:
         # on the exit? win
