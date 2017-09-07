@@ -29,84 +29,140 @@ def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
-
 def get_locations():
     return random.sample(CELLS, 3)
 
 
 def move_player(player, move):
-    # get player position
+    # get player position and move
+    # return new player position
     x, y = player
 
     if move == "LEFT":
-        # if move == LEFT, x - 1
         x -= 1
     elif move == "RIGHT":
-        # if move == RIGHT, x + 1
         x += 1
     elif move == "UP":
-        # if move == UP, y - 1
         y -= 1
     elif move == "DOWN":
-        # if move == DOWN, y + 1
         y += 1
-    # return new player position
     return x, y
 
 
 def get_moves(player):
+    # get player position
+    # return valid moves so the player cannot exit the game grid
     moves = ["LEFT", "RIGHT", "UP", "DOWN"]
     x, y = player
-    # if players y == 0, they can't move UP
+
     if y == 0:
         moves.remove("UP")
-    # if players y == 4, they can't move DOWN
     if y == 4:
         moves.remove("DOWN")
-    # if players x == 0, they can't move LEFT
     if x == 0:
         moves.remove("LEFT")
-    # if players x == 4, they can't move RIGHT
     if x == 4:
         moves.remove("RIGHT")
     return moves
 
 
+def draw_map(player, monster=None, exit=None):
+    print(" _" * 5)
+    tile = "|"
+    tile_bottom = "_"
+    player_icon = "X"
+    monster_icon = "M"
+    exit_icon = "D"
+    tile_construct = "{}{}{}"
 
-monster, exit, player = get_locations()
+    for cell in CELLS:
+        x, y = cell
 
-while True:
-    clear_screen()
+        if x < 4:
+            line_end = ""
+            tile_wall = ""
+        else:
+            line_end = "\n"
+            tile_wall = "|"
 
-    print("You are currently in room {}".format(player)) # add position
+        if cell == exit:
+            output = tile_construct.format(tile, exit_icon, tile_wall)
+        elif cell == monster:
+            output = tile_construct.format(tile, monster_icon, tile_wall)
+        elif cell == player:
+            output = tile_construct.format(tile, player_icon, tile_wall)
+        else:
+            output = tile_construct.format(tile, tile_bottom, tile_wall)
 
-    available_moves = get_moves(player)
-    print("You can move {}, or enter QUIT to exit the game".format(", ".join(available_moves))) # add available moves
 
-    move = input("> ").upper()
+        print(output, end=line_end)
 
-    if move == "QUIT":
-        break
 
-    if move == "CHEAT":
-        print("Monster: {}".format(monster))
-        print("Exit: {}".format(exit))
 
-    # good move? move the player
-    if move in available_moves:
-        player = move_player(player, move)
-    # bad move? Don't do anything
-    else:
-        print("{} is not a valid move. You can move {}".format(move, ", ".join(available_moves)))
 
-    if player == exit:
-        # on the exit? win
-        print("you win")
-        break
+def game_loop():
+    monster, exit, player = get_locations()
 
-    if player == monster:
-        # on the monster? lose
-        print("You lose")
-        break
+    while True:
+        clear_screen
+        print()
+        draw_map(player)
+        print("You are currently in room {}".format(player)) # add position
+
+        available_moves = get_moves(player)
+        print("You can move {}, or enter QUIT to exit the game".format(", ".join(available_moves))) # add available moves
+
+        move = input("> ").upper()
+
+        if move == "QUIT" or move == "EXIT":
+            break
+
+        if move == "CHEAT":
+            clear_screen()
+            print()
+            draw_map(player=player, monster=monster, exit=exit)
+            print()
+            print("Monster: {}".format(monster))
+            print("Exit: {}".format(exit))
+            input("Press RETURN or ENTER to continue")
+
+        # good move? move the player
+        if move in available_moves:
+            player = move_player(player, move)
+        # bad move? Don't do anything
+        else:
+            input("{} is not a valid move. You can move {} Press enter to continue.".format(move, ", ".join(available_moves)))
+            clear_screen()
+
+        if player == exit:
+            # on the exit? win
+            clear_screen()
+            print()
+            draw_map(player=player, exit=exit)
+            print()
+            print("you win")
+            break
+
+        if player == monster:
+            # on the monster? lose
+            clear_screen()
+            print()
+            draw_map(player=player, monster=monster)
+            print()
+            print("You lose")
+            break
 
     # otherwise loop
+
+
+def game_start():
+    clear_screen()
+    print("Wecome to Dungeon Game!")
+    print("-----------------------")
+    print()
+    input("Press RETURN or ENTER to start")
+    clear_screen()
+    game_loop()
+
+
+game_start()
